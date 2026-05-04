@@ -1,0 +1,13 @@
+{
+  "name": "kisd-calendar",
+  "version": "1.0.0",
+  "description": "KISD Calendar – scrapes course selection from spaces.kisd.de",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^29.0.0",
+    "puppeteer": "^24.42.0"
+  }
+}

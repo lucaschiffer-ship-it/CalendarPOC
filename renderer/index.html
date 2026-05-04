@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KISD Calendar</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── Login screen ─────────────────────────────────── -->
+  <div id="login-screen" class="screen active">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="logo">K</div>
+        <h1>KISD Calendar</h1>
+        <p class="subtitle">Sign in with your spaces.kisd.de account</p>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" type="text" autocomplete="username"
+                 placeholder="your.name" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password"
+                 placeholder="••••••••" required />
+        </div>
+
+        <div id="login-error" class="error-banner hidden"></div>
+
+        <button type="submit" id="login-btn" class="btn-primary">
+          <span class="btn-label">Sign in &amp; load courses</span>
+          <span class="btn-spinner hidden">Loading…</span>
+        </button>
+      </form>
+
+      <p class="note">Credentials are used only for this session and never stored.</p>
+    </div>
+  </div>
+
+  <!-- ── Courses screen ───────────────────────────────── -->
+  <div id="courses-screen" class="screen">
+    <header class="app-header">
+      <div class="header-title">
+        <div class="logo small">K</div>
+        <div>
+          <h1>KISD Calendar</h1>
+          <p class="semester">Semester 2026-1 · My Selected Courses · <span id="course-count"></span></p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="view-toggle">
+          <button id="list-view-btn" class="btn-toggle active">List</button>
+          <button id="cal-view-btn"  class="btn-toggle">Calendar</button>
+        </div>
+        <button id="refresh-btn" class="btn-secondary">↻ Refresh</button>
+        <button id="logout-btn" class="btn-ghost">Sign out</button>
+      </div>
+    </header>
+
+    <div id="status-bar" class="status-bar hidden">
+      <span id="status-text">Scraping courses…</span>
+    </div>
+
+    <main id="course-list" class="course-list">
+      <!-- cards injected by renderer.js -->
+    </main>
+
+    <!-- ── Calendar view ─────────────────────────────────── -->
+    <div id="cal-view" class="cal-view hidden">
+      <div class="cal-nav">
+        <button id="cal-prev" class="btn-ghost cal-nav-btn">‹</button>
+        <span id="cal-week-label" class="cal-week-label"></span>
+        <button id="cal-next" class="btn-ghost cal-nav-btn">›</button>
+      </div>
+      <div class="cal-scroll">
+        <div id="cal-grid" class="cal-grid"></div>
+        <div id="missing-section" class="missing-section hidden"></div>
+      </div>
+    </div>
+
+    <div id="empty-state" class="empty-state hidden">
+      <p>No courses found for "My Selected".</p>
+      <p class="hint">Make sure you have selected courses on spaces.kisd.de.</p>
+    </div>
+  </div>
+
+  <!-- ── Edit modal ──────────────────────────────────── -->
+  <div id="edit-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Course</h2>
+        <button id="modal-close-btn" class="btn-ghost modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="edit-title">Title</label>
+          <input id="edit-title" type="text" />
+        </div>
+        <div class="field">
+          <label for="edit-desc">Description</label>
+          <textarea id="edit-desc" rows="3"></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="edit-start">Start date</label>
+            <input id="edit-start" type="date" />
+          </div>
+          <div class="field">
+            <label for="edit-end">End date</label>
+            <input id="edit-end" type="date" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Meeting times</label>
+          <div id="edit-sessions"></div>
+          <button id="add-session-btn" class="btn-secondary add-session-btn">+ Add time slot</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="modal-cancel-btn" class="btn-ghost">Cancel</button>
+        <button id="modal-save-btn" class="btn-primary modal-save-btn">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MFA overlay ─────────────────────────────────── -->
+  <div id="mfa-overlay" class="screen hidden">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="logo">K</div>
+        <h1>Two-Factor Auth</h1>
+        <p class="subtitle">Enter the verification code sent to your device.</p>
+      </div>
+
+      <form id="mfa-form" novalidate>
+        <div class="field">
+          <label for="mfa-code">Verification code</label>
+          <input id="mfa-code" type="text" inputmode="numeric"
+                 autocomplete="one-time-code" placeholder="123456" required />
+        </div>
+
+        <button type="submit" id="mfa-btn" class="btn-primary">
+          <span class="btn-label">Submit code</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
