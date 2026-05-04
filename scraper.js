@@ -180,17 +180,6 @@ async function scrapeKISD(username, password, userDataDir, requestMfaCode) {
     return cards.length > 0 || !!empty;
   }, { timeout: 15000 }).catch(() => {});
 
-  const bodyClass = await page.evaluate(() => document.body.className);
-  console.log('[BODY CLASS]', bodyClass);
-
-  const swapHtml = await page.evaluate(() =>
-    document.querySelector('#tertiary-swap-container, #swap-container')?.innerHTML?.slice(0, 1000)
-  );
-  console.log('[SWAP HTML]', swapHtml);
-
-  require('fs').writeFileSync('/tmp/kisd-current.html', await page.content());
-  console.log('[DEBUG] saved to /tmp/kisd-current.html');
-
   const courses = await page.evaluate(() => {
     return Array.from(document.querySelectorAll('article.card.course')).map((el) => {
       const h1 = el.querySelector('h1[title]');
