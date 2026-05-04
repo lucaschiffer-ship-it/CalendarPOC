@@ -195,6 +195,7 @@ async function scrapeKISD(username, password, userDataDir, requestMfaCode) {
           .map((e) => e.textContent.trim()).filter(Boolean)
       )];
 
+
       let timeframe = null, meetingTimes = null, location = null, description = null;
       for (const label of el.querySelectorAll('.info-label')) {
         const key     = label.textContent.trim();
@@ -206,7 +207,7 @@ async function scrapeKISD(username, password, userDataDir, requestMfaCode) {
           meetingTimes = content.innerHTML
             .replace(/<br\s*\/?>/gi, ' · ').replace(/<[^>]+>/g, '')
             .replace(/\s*·\s*/g, ' · ').replace(/\s+/g, ' ').trim();
-        if (key === 'Location')
+        if (key === 'Meeting Location' || key === 'Location')
           location = content.textContent.replace(/\s+/g, ' ').trim();
         if (key === 'Description')
           description = content.textContent.replace(/\s+/g, ' ').trim();
@@ -221,6 +222,23 @@ async function scrapeKISD(username, password, userDataDir, requestMfaCode) {
   });
 
   console.log(`[scraper] Found ${courses.length} course(s).`);
+
+  // Location is only on individual course detail pages — scrape each one
+  for (const course of courses) {
+    if (course.location || !course.courseUrl) continue;
+    await page.goto(course.courseUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+    course.location = await page.evaluate(() => {
+      for (const label of document.querySelectorAll('.info-label')) {
+        const key = label.textContent.trim();
+        if (key === 'Meeting Location' || key === 'Location') {
+          return label.parentElement?.querySelector('.info-content')
+            ?.textContent.replace(/\s+/g, ' ').trim() || null;
+        }
+      }
+      return null;
+    });
+  }
+
   return courses;
 }
 

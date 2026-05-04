@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, safeStorage } = require('electron');
+const { app, BrowserWindow, ipcMain, safeStorage, shell } = require('electron');
 const path = require('path');
 const fs   = require('fs');
 const { scrapeKISD, resetBrowser } = require('./scraper');
@@ -127,6 +127,8 @@ ipcMain.handle('logout', async () => {
   await resetBrowser();
   return { ok: true };
 });
+
+ipcMain.handle('open-external', (_event, url) => shell.openExternal(url));
 
 ipcMain.handle('clear-session', async () => {
   const profileDir = path.join(app.getPath('userData'), 'puppeteer-profile');

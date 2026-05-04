@@ -480,10 +480,36 @@ body {
   color: #fff;
   margin-top: 2px;
 }
+.cal-event-meta {
+  font-size: 9px;
+  opacity: .7;
+  color: #fff;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* ── Clickable calendar events ────────────────────────────────────────────── */
 .cal-event { cursor: pointer; transition: filter .1s; }
 .cal-event:hover { filter: brightness(1.15); }
+.cal-event-link {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(255,255,255,.18);
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .15s;
+}
+.cal-event:hover .cal-event-link { opacity: 1; }
+.cal-event-link:hover { background: rgba(255,255,255,.35); }
 
 /* ── Missing courses section ──────────────────────────────────────────────── */
 .missing-section {

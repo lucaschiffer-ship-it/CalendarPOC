@@ -13,6 +13,7 @@ const passwordInput = document.getElementById('password');
 const loginBtn      = document.getElementById('login-btn');
 const loginError    = document.getElementById('login-error');
 
+const courseSelectionBtn = document.getElementById('course-selection-btn');
 const refreshBtn    = document.getElementById('refresh-btn');
 const logoutBtn     = document.getElementById('logout-btn');
 const statusBar     = document.getElementById('status-bar');
@@ -171,6 +172,10 @@ function hideError() {
 }
 
 // ── Refresh ───────────────────────────────────────────────────────────────────
+
+courseSelectionBtn.addEventListener('click', () =>
+  window.kisd.openExternal('https://spaces.kisd.de/course-selection/?semester=2026-1')
+);
 
 refreshBtn.addEventListener('click', () => triggerRefresh());
 
@@ -597,10 +602,22 @@ function renderCalendar(courses, weekStart) {
       ev.className = 'cal-event';
       ev.style.cssText =
         `top:${top}px; height:${height}px; background:${color}cc; border-left-color:${color};`;
+      const lecturerStr = eff.lecturers && eff.lecturers.length ? eff.lecturers.join(', ') : null;
       ev.innerHTML =
         `<div class="cal-event-title">${escHtml(eff.title)}</div>` +
-        `<div class="cal-event-time">${fmtMin(startMin)} – ${fmtMin(endMin)}</div>`;
+        `<div class="cal-event-time">${fmtMin(startMin)} – ${fmtMin(endMin)}</div>` +
+        (lecturerStr ? `<div class="cal-event-meta">${escHtml(lecturerStr)}</div>` : '') +
+        (eff.location  ? `<div class="cal-event-meta">${escHtml(eff.location)}</div>`  : '') +
+        (course.courseUrl
+          ? `<button class="cal-event-link" title="Open in browser">↗</button>`
+          : '');
       ev.addEventListener('click', () => openEditModal(key));
+      if (course.courseUrl) {
+        ev.querySelector('.cal-event-link').addEventListener('click', (e) => {
+          e.stopPropagation();
+          window.kisd.openExternal(course.courseUrl);
+        });
+      }
       col.appendChild(ev);
     });
 
