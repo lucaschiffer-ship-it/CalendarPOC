@@ -104,6 +104,30 @@ mfaForm.addEventListener('submit', (e) => {
   window.kisd.submitMfaCode(code);
 });
 
+// ── Auto-login on startup ─────────────────────────────────────────────────────
+
+(async function tryAutoLogin() {
+  const saved = await window.kisd.getSavedCredentials();
+  if (!saved) return;
+
+  usernameInput.value = saved.username;
+  passwordInput.value = saved.password;
+  setLoginLoading(true);
+  hideError();
+
+  const result = await window.kisd.scrape({ username: saved.username, password: saved.password });
+  setLoginLoading(false);
+
+  if (result.ok) {
+    _username = saved.username;
+    _password = saved.password;
+    renderCourses(result.courses);
+    showScreen('courses-screen');
+  } else {
+    showError(result.error || 'Auto-login failed — please sign in manually.');
+  }
+})();
+
 // ── Login ─────────────────────────────────────────────────────────────────────
 
 loginForm.addEventListener('submit', async (e) => {
@@ -170,7 +194,8 @@ async function triggerRefresh() {
 
 // ── Logout ────────────────────────────────────────────────────────────────────
 
-logoutBtn.addEventListener('click', () => {
+logoutBtn.addEventListener('click', async () => {
+  await window.kisd.logout();
   _username = '';
   _password = '';
   _courses  = [];

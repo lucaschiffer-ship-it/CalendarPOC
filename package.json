@@ -4,10 +4,14 @@
   "description": "KISD Calendar – scrapes course selection from spaces.kisd.de",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dev": "NODE_ENV=development electron ."
   },
   "dependencies": {
     "electron": "^29.0.0",
     "puppeteer": "^24.42.0"
+  },
+  "devDependencies": {
+    "electron-reload": "^2.0.0-alpha.1"
   }
 }
